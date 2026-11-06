@@ -121,6 +121,22 @@ function checkDescription(name, description) {
   if (description.length > 1024) fail(`${name}: description exceeds 1024 chars (${description.length})`);
 }
 
+// Agent Skills / skills.sh require lowercase hyphenated names so the CLI can
+// map `--skill <name>` onto the directory it discovers.
+function checkName(file, name, dirName) {
+  if (!name) {
+    fail(`${file}: missing name`);
+    return;
+  }
+  if (name !== dirName) {
+    fail(`${file}: frontmatter name "${name}" does not match directory "${dirName}"`);
+  }
+  if (name.length > 64) fail(`${file}: name exceeds 64 chars (${name.length})`);
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(name)) {
+    fail(`${file}: name must be lowercase words separated by single hyphens -> ${name}`);
+  }
+}
+
 async function validateSkill(skillDir) {
   const name = path.basename(skillDir);
   const skillFile = path.join(skillDir, "SKILL.md");
@@ -134,9 +150,7 @@ async function validateSkill(skillDir) {
   const text = await readFile(skillFile, "utf8");
   const frontmatter = parseFrontmatter(text, rel);
   if (frontmatter) {
-    if (frontmatter.name !== name) {
-      fail(`${rel}: frontmatter name "${frontmatter.name}" does not match directory "${name}"`);
-    }
+    checkName(rel, frontmatter.name, name);
     checkDescription(rel, frontmatter.description);
     if (!frontmatter.license) warn(`${rel}: no license field`);
     const unknownKeys = Object.keys(frontmatter).filter(

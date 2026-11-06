@@ -9,6 +9,44 @@ Two agent skills that cover Beat Saber modding from both sides: **installing mod
 
 Every technical claim is sourced from the [BSMG Wiki](https://bsmg.wiki/), which is the community's canonical documentation. Each reference file links back to the exact wiki page it covers so an agent can re-check anything that may have changed.
 
+## Quick start
+
+The repo is laid out the way the [`skills`](https://skills.sh) CLI expects (`skills/<name>/SKILL.md`), so installation is one command. Requires Node.js 22.20 or later; run it from the project you want the skills in.
+
+```bash
+npx skills add denpadokei/beatsaber-modding-skills
+```
+
+The CLI detects the agents installed on your machine, then asks which skills to add, how to install them (symlink, or copy when symlinks are unavailable), and whether the install is project-scoped or global.
+
+Non-interactive installs:
+
+```bash
+# both skills, GitHub Copilot, project scope (.agents/skills/)
+npx skills add denpadokei/beatsaber-modding-skills --skill '*' -a github-copilot -y
+
+# both skills for every detected agent, available in all projects
+npx skills add denpadokei/beatsaber-modding-skills --all -g
+
+# one skill only
+npx skills add denpadokei/beatsaber-modding-skills --skill beatsaber-quest-modding
+```
+
+Inspect, update, and remove installed skills:
+
+```bash
+npx skills add denpadokei/beatsaber-modding-skills --list   # list skills without installing
+npx skills list                                             # list installed skills
+npx skills update                                           # pull the latest version
+npx skills remove beatsaber-pc-modding                      # uninstall one skill
+```
+
+If you already cloned this repo, the same CLI works on the folder:
+
+```bash
+npx skills add ./beatsaber-modding-skills
+```
+
 ## What is in a skill
 
 Each skill uses progressive disclosure:
@@ -17,7 +55,9 @@ Each skill uses progressive disclosure:
 - `references/` holds the deep material, loaded only when a task needs it.
 - `assets/` holds copy-pasteable templates (plugin skeleton, manifests, config headers, BSML views).
 
-## Install
+## Manual install
+
+The CLI in [Quick start](#quick-start) is the recommended path. Use the layouts below when you need a vendored copy, an offline install, or a host with no `skills` CLI support.
 
 ### GitHub Copilot
 
@@ -51,7 +91,7 @@ Copy-Item -Recurse skills\beatsaber-quest-modding $env:USERPROFILE\.claude\skill
 
 ### Any other SKILL.md host
 
-Point the host at `skills/beatsaber-pc-modding/` and `skills/beatsaber-quest-modding/`. The only requirement is YAML frontmatter with `name` and `description` plus relative links that resolve inside the folder.
+Point the host at `skills/beatsaber-pc-modding/` and `skills/beatsaber-quest-modding/`. The only requirement is YAML frontmatter with `name` and `description` plus relative links that resolve inside the folder. If the host is on the [skills.sh supported list](https://github.com/vercel-labs/skills/blob/main/docs/agents.md), the CLI can do this for you with `-a <agent>`.
 
 ## Example prompts
 
@@ -90,7 +130,15 @@ Beat Saber の Modding を扱う 2 つのエージェントスキルです。
 - `beatsaber-pc-modding` — Steam / Oculus PC 版。BSManager などでの Mod 導入・ダウングレードと、C# + BSIPA + Harmony + BSML + SiraUtil による Mod 開発。
 - `beatsaber-quest-modding` — Quest 単体版。ModsBeforeFriday / QuestPatcher での導入と、C++ + QPM + beatsaber-hook + custom-types + config-utils + BSML によるネイティブ Mod 開発、QMOD パッケージング。
 
-導入手順は上記の `Install` を参照してください。各スキルは `SKILL.md` を入口に、必要になったときだけ `references/` の詳細を読みます。内容は [BSMG Wiki](https://bsmg.wiki/)（MIT）を根拠に再構成しています。Wiki の方が新しい場合は Wiki を優先してください。
+導入手順は上記の [Quick start](#quick-start) を参照してください。CLI では次の 1 コマンドで入ります。
+
+```bash
+npx skills add denpadokei/beatsaber-modding-skills
+```
+
+`--list` で内容の確認、`--skill <name>` で個別インストール、`-a github-copilot` で対象エージェント指定、`-g` で全プロジェクト共通になります。手動コピーは `Manual install` を参照してください。
+
+各スキルは `SKILL.md` を入口に、必要になったときだけ `references/` の詳細を読みます。内容は [BSMG Wiki](https://bsmg.wiki/)（MIT）を根拠に再構成しています。Wiki の方が新しい場合は Wiki を優先してください。
 
 ## Validation
 
@@ -100,7 +148,15 @@ The repo ships a dependency-free validator:
 node scripts/validate.mjs
 ```
 
-It checks frontmatter, skill-name/directory agreement, description length, missing or orphaned reference files, broken relative links, and JSON template parsing. `npm test` runs the same check. A GitHub Actions workflow runs it on every push.
+It checks frontmatter, Agent Skills naming rules, skill-name/directory agreement, description length, missing or orphaned reference files, broken relative links, and JSON template parsing. `npm test` runs the same check.
+
+To confirm the repo is still installable with the skills.sh CLI, list it without installing:
+
+```bash
+npm run validate:cli
+```
+
+A GitHub Actions workflow runs both on every push.
 
 ## Sources and attribution
 
