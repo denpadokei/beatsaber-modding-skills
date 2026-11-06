@@ -23,6 +23,7 @@ Covers both jobs people call "modding": **using** mods and **building** mods. Id
 | "Inject a service", "Zenject", "SiraUtil", "installer" | [Zenject and SiraUtil](references/zenject-sirautil.md) |
 | "Crashes", "logs", "decompile", "test in game" | [Debugging and testing](references/debugging-and-testing.md) |
 | "Release", "BeatMods", "manifest", "support a user" | [Release and support](references/release-and-support.md) |
+| "GitHub Actions", "CI", "tag release", "build on push" | [Automated builds and tag releases](references/automated-builds.md) |
 
 ## 2. Non-negotiables
 
@@ -67,7 +68,7 @@ verify game version → create BSMT project → implement → build → launch w
    - persistent UI → BSML settings tab
    - new gameplay object → Zenject installer + pool
 6. **Test.** Launch with `--verbose`, confirm the plugin loads, exercise the feature in every affected mode (Solo, Campaign, Party, Online, Tutorial), then do an internal restart (Settings → OK) to catch stale references.
-7. **Release.** Build `Release`; BSMT emits a zip under `bin\Release\net472\zip\`. Validate the manifest and submit to BeatMods if desired.
+7. **Release.** Build `Release`; BSMT emits a zip under `bin\Release\net472\zip\`. Validate the manifest and submit to BeatMods if desired. For repeatable builds, add the GitHub Actions workflow in [automated-builds.md](references/automated-builds.md) and publish on `v*` tags.
 
 ### Plugin skeleton
 
@@ -172,6 +173,7 @@ Verify before relying on these. They were current when this skill was written (2
 - [Zenject and SiraUtil](references/zenject-sirautil.md) — installers, locations, bindings, UI injection, Affinity.
 - [Debugging and testing](references/debugging-and-testing.md) — launch args, IPA logs, decompilers, RUE, debug player, test matrix.
 - [Release and support](references/release-and-support.md) — release checklist, BeatMods expectations, support triage.
+- [Automated builds and tag releases](references/automated-builds.md) — GitHub Actions, `setup-beat-saber`, artifact upload, tag-triggered GitHub Releases.
 
 ## 8. Related areas
 

@@ -1,0 +1,55 @@
+# Template: build on tag creation and attach the zip to that tag's GitHub Release.
+# Place at .github/workflows/release.yml and replace MyMod with your project name.
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Set up Beat Saber references
+        uses: nicoco007/setup-beat-saber@v1
+        with:
+          project-path: ${{ github.workspace }}\MyMod\MyMod.csproj
+
+      - name: Build Release
+        run: dotnet build "${{ github.workspace }}\MyMod\MyMod.csproj" -c Release
+
+      # On GitHub Actions the BSMT template disables ZipRelease and writes
+      # bin\Release\net472\Final\Plugins\MyMod.dll instead. Package that layout.
+      - name: Package release zip
+        shell: pwsh
+        run: |
+          $final = "MyMod\bin\Release\net472\Final"
+          if (-not (Test-Path $final)) { throw "CI output not found: $final" }
+          New-Item -ItemType Directory -Force -Path "MyMod\bin\Release\artifacts" | Out-Null
+          Compress-Archive -Path "$final\*" -DestinationPath "MyMod\bin\Release\artifacts\MyMod-${{ github.ref_name }}.zip" -Force
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: MyMod-${{ github.ref_name }}
+          path: ${{ github.workspace }}\MyMod\bin\Release\artifacts\MyMod-${{ github.ref_name }}.zip
+          if-no-files-found: error
+
+      - name: Attach artifacts to the tag
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: MyMod ${{ github.ref_name }}
+          generate_release_notes: true
+          prerelease: ${{ contains(github.ref_name, '-') }}
+          fail_on_unmatched_files: true
+          files: |
+            MyMod/bin/Release/artifacts/MyMod-${{ github.ref_name }}.zip

@@ -24,7 +24,7 @@ Quest standalone runs an Android/il2cpp build of Beat Saber. Mods are native `.s
 | "Create a MonoBehaviour in C++", "custom-types" | [Custom types](references/custom-types.md) |
 | "Add a settings page", "BSML on Quest" | [BSML UI](references/bsml-ui.md) |
 | "Build and copy", "logcat", "crash", "tombstone" | [Build, test, debug](references/build-test-debug.md) |
-| "Make a QMOD", "cover image", "publish" | [Packaging and release](references/packaging-release.md) |
+| "Make a QMOD", "cover image", "publish", "CI / tag release" | [Packaging and release](references/packaging-release.md) |
 
 ## 2. Non-negotiables
 
@@ -162,7 +162,7 @@ Verify before relying on these. Current at time of writing (2026-11); game-versi
 - [Custom types](references/custom-types.md) — `DECLARE_CLASS_CODEGEN`, `DEFINE_TYPE`, overrides, interfaces, constructors, coroutines.
 - [BSML UI](references/bsml-ui.md) — registration points, BSML-Lite, `DidActivate`, XML views.
 - [Build, test, debug](references/build-test-debug.md) — scripts, ADB, logcat, tombstones, `ndk-stack`, test matrix.
-- [Packaging and release](references/packaging-release.md) — QMOD contents, cover image, file copies, publishing.
+- [Packaging and release](references/packaging-release.md) — QMOD contents, cover image, file copies, CI, tag-triggered GitHub Releases.
 
 ## 8. Source and scope
 

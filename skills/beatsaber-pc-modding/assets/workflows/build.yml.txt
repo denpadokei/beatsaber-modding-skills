@@ -1,0 +1,52 @@
+# Template: build a BSIPA mod on every push / PR.
+# Place at .github/workflows/build.yml and replace MyMod with your project name.
+# Reference: https://github.com/Auros/SiraUtil/blob/main/.github/workflows/build.yml
+name: Build
+
+on:
+  push:
+    branches: [master, main]
+    paths:
+      - "MyMod/**"
+      - ".github/workflows/build.yml"
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Beat Saber references
+        uses: nicoco007/setup-beat-saber@v1
+        with:
+          project-path: ${{ github.workspace }}\MyMod\MyMod.csproj
+
+      # Only needed when the project references a private NuGet feed.
+      # - name: Update private NuGet source
+      #   run: dotnet nuget update source "my-private-feed" --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text
+
+      - name: Build Release
+        run: dotnet build "${{ github.workspace }}\MyMod\MyMod.csproj" -c Release
+
+      # On GitHub Actions the BSMT template disables ZipRelease and writes
+      # bin\Release\net472\Final\Plugins\MyMod.dll instead. Package that layout.
+      - name: Package release zip
+        shell: pwsh
+        run: |
+          $final = "MyMod\bin\Release\net472\Final"
+          if (-not (Test-Path $final)) { throw "CI output not found: $final" }
+          New-Item -ItemType Directory -Force -Path "MyMod\bin\Release\artifacts" | Out-Null
+          Compress-Archive -Path "$final\*" -DestinationPath "MyMod\bin\Release\artifacts\MyMod.zip" -Force
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: MyMod-${{ github.sha }}
+          path: ${{ github.workspace }}\MyMod\bin\Release\artifacts\MyMod.zip
+          if-no-files-found: error
+          retention-days: 14

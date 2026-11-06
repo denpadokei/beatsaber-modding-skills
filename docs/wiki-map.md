@@ -73,6 +73,8 @@ Use these canonical pages when a skill needs to re-verify something or when the 
 | Zenject/Extenject | <https://github.com/Mathijs-Bakker/Extenject> |
 | QMOD schema | <https://github.com/Lauriethefish/QuestPatcher.QMod> |
 | Quest mod template | <https://github.com/Lauriethefish/quest-mod-template> |
+| SiraUtil CI workflow (reference) | <https://github.com/Auros/SiraUtil/blob/main/.github/workflows/build.yml> |
+| setup-beat-saber action | <https://github.com/nicoco007/setup-beat-saber> |
 | beatsaber-hook | <https://github.com/QuestPackageManager/beatsaber-hook> |
 | QPM CLI | <https://github.com/QuestPackageManager/QPM.CLI> |
 | BeatMods | <https://beatmods.com> |

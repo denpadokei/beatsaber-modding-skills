@@ -117,14 +117,89 @@ Release notes should include:
 - Known incompatibilities.
 - Whether saves/config need migration.
 
-## CI
+## CI and tag-triggered releases
 
-The template includes `.github/workflows/build-ndk.yml`, which builds with the Android NDK runner. Adapt it to:
+The template ships `.github/workflows/build-ndk.yml`, which builds on Ubuntu with the Android NDK and runs on branches, PRs, and `v*` tags. Adapt it to:
 
-1. Restore QPM dependencies.
-2. Build.
-3. Run `qpm s validate`.
-4. Upload the `.qmod` as an artifact on tags.
+1. Restore QPM dependencies (`Fernthedev/qpm-action@v1` with `restore: true`).
+2. Set the NDK path (`ndkpath.txt`) from the setup action.
+3. Build the QMOD (`qpm s qmod`).
+4. Validate the manifest (`qpm s validate`).
+5. Upload the `.qmod` as a workflow artifact.
+6. On a `v*` tag, create a GitHub Release for that tag and attach the `.qmod`.
+
+Template: [`../assets/workflows/quest-release.yml.txt`](../assets/workflows/quest-release.yml.txt).
+
+```yaml
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: true
+          lfs: true
+
+      - uses: seanmiddleditch/gha-setup-ninja@v6
+
+      - name: Setup NDK
+        id: setup-ndk
+        uses: ./.github/actions/canary-ndk
+
+      - name: Create ndkpath.txt
+        run: |
+          echo ${{ steps.setup-ndk.outputs.ndk-path }} > ${GITHUB_WORKSPACE}/ndkpath.txt
+
+      - uses: Fernthedev/qpm-action@v1
+        with:
+          workflow_token: ${{ secrets.GITHUB_TOKEN }}
+          restore: true
+          cache: true
+          publish: false
+
+      - run: qpm s qmod
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: MyQuestMod-${{ github.ref_name }}
+          path: ./MyQuestMod.qmod
+          if-no-files-found: error
+
+      - name: Attach artifacts to the tag
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: MyQuestMod ${{ github.ref_name }}
+          generate_release_notes: true
+          prerelease: ${{ contains(github.ref_name, '-') }}
+          fail_on_unmatched_files: true
+          files: |
+            ./MyQuestMod.qmod
+```
+
+Notes:
+
+- `tag_name: ${{ github.ref_name }}` is explicit. Older template workflows use `github.event.inputs.version`, which is empty on a tag push; omit it or use `github.ref_name`.
+- `permissions: contents: write` is required for the release step; organization defaults may be read-only.
+- Keep the NDK version in CI identical to local development. A mismatched NDK produces different crash behavior and makes tombstones hard to compare.
+- Run `qpm s validate` in CI before packaging so a schema error fails the build instead of shipping a broken QMOD.
+- Workflow artifacts expire; release assets do not. Attach the QMOD to the GitHub Release for the tag.
+
+Release procedure:
+
+1. Bump the version in `qpm.json` and `mod.template.json`.
+2. Update `packageVersion` if the target game version changed.
+3. Commit, push, and confirm the branch build passes.
+4. `git tag v1.0.0 && git push origin v1.0.0`.
+5. Verify the release page: tag, QMOD asset, and notes.
 
 Pin the NDK version in CI to match local development; a mismatched NDK produces different crash behavior.
 

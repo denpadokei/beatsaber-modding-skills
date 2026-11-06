@@ -61,6 +61,7 @@ Point the host at `skills/beatsaber-pc-modding/` and `skills/beatsaber-quest-mod
 - "My Quest mod crashes on startup. Here is the tombstone. Find the cause."
 - "Add a `config-utils` config and a BSML-Lite settings page to this QPM project."
 - "Package this Quest mod as a QMOD with a cover image and file copies."
+- "Set up GitHub Actions to build on push and attach the zip to a `v*` tag release."
 
 ## Scope
 
@@ -80,6 +81,7 @@ Both skills cover the full path from "I want mods" to "I ship a mod": installati
 | UI | BSML | BSML / BSML-Lite |
 | Debugging | IPA console, ILSpy, RUE, debug Unity build | `logcat`, tombstones, `ndk-stack` |
 | Packaging | Release zip / BeatMods | `.qmod` / mod repositories |
+| CI / releases | GitHub Actions + tag-triggered GitHub Release | GitHub Actions + tag-triggered GitHub Release |
 
 ## 日本語概要
 

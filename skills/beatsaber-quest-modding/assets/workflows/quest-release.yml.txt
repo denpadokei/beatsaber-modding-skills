@@ -1,0 +1,65 @@
+# Template: build a Quest mod and release it on tag.
+# Place at .github/workflows/release.yml and replace MyQuestMod with your mod name.
+# Assumes the quest-mod-template layout, including .github/actions/canary-ndk.
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          submodules: true
+          lfs: true
+
+      - uses: seanmiddleditch/gha-setup-ninja@v6
+
+      - name: Setup NDK
+        id: setup-ndk
+        uses: ./.github/actions/canary-ndk
+
+      - name: Create ndkpath.txt
+        run: |
+          echo ${{ steps.setup-ndk.outputs.ndk-path }} > ${GITHUB_WORKSPACE}/ndkpath.txt
+          cat ${GITHUB_WORKSPACE}/ndkpath.txt
+
+      - name: Setup QPM
+        uses: Fernthedev/qpm-action@v1
+        with:
+          workflow_token: ${{ secrets.GITHUB_TOKEN }}
+          restore: true
+          cache: true
+          publish: false
+
+      - name: Build QMOD
+        run: |
+          cd ${GITHUB_WORKSPACE}
+          qpm s qmod
+
+      - name: Upload QMOD artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: MyQuestMod-${{ github.ref_name }}
+          path: ./MyQuestMod.qmod
+          if-no-files-found: error
+
+      - name: Attach artifacts to the tag
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: MyQuestMod ${{ github.ref_name }}
+          generate_release_notes: true
+          prerelease: ${{ contains(github.ref_name, '-') }}
+          fail_on_unmatched_files: true
+          files: |
+            ./MyQuestMod.qmod
