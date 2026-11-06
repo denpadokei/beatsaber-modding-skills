@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "node scripts/validate.mjs",
-    "validate": "node scripts/validate.mjs"
+    "validate": "node scripts/validate.mjs",
+    "validate:cli": "npx --yes skills@latest add . --list"
   },
   "license": "MIT"
 }

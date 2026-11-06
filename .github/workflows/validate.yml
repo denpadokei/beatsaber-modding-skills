@@ -14,3 +14,12 @@ jobs:
           node-version: 22
       - name: Validate skill structure
         run: npm test
+      - name: Verify skills.sh CLI discovery
+        run: |
+          set -euo pipefail
+          output="$(npx --yes skills@latest add . --list)"
+          echo "$output"
+          grep -q 'beatsaber-pc-modding' <<< "$output"
+          grep -q 'beatsaber-quest-modding' <<< "$output"
+        env:
+          DISABLE_TELEMETRY: "1"
