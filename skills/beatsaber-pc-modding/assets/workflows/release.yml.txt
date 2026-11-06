@@ -23,6 +23,14 @@ jobs:
         with:
           project-path: ${{ github.workspace }}\MyMod\MyMod.csproj
 
+      - name: Verify Beat Saber references
+        shell: pwsh
+        run: |
+          if (-not $env:BeatSaberDir) { throw "BeatSaberDir is not set" }
+          if (-not (Test-Path (Join-Path $env:BeatSaberDir "Libs"))) {
+            throw "Dependency references are missing. Check DependsOn Version values and the setup-beat-saber log."
+          }
+
       - name: Build Release
         run: dotnet build "${{ github.workspace }}\MyMod\MyMod.csproj" -c Release
 

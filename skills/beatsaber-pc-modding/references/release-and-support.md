@@ -60,6 +60,8 @@ GitHub Actions can build the mod on every push and attach the release zip to a t
 
 Full walkthrough, workflow files, version/tag synchronization, and troubleshooting: [automated-builds.md](automated-builds.md). Templates: [`../assets/workflows/build.yml.txt`](../assets/workflows/build.yml.txt) and [`../assets/workflows/release.yml.txt`](../assets/workflows/release.yml.txt).
 
+Every `DependsOn` needs a `Version` in npm-semver form (`4.3.7`, `^4.3.6`); `setup-beat-saber` skips dependencies without one and selects the lowest matching version otherwise. See [dependency version syntax](automated-builds.md#dependency-version-syntax).
+
 Tag flow:
 
 ```powershell

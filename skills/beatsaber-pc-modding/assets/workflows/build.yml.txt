@@ -26,6 +26,14 @@ jobs:
         with:
           project-path: ${{ github.workspace }}\MyMod\MyMod.csproj
 
+      - name: Verify Beat Saber references
+        shell: pwsh
+        run: |
+          if (-not $env:BeatSaberDir) { throw "BeatSaberDir is not set" }
+          if (-not (Test-Path (Join-Path $env:BeatSaberDir "Libs"))) {
+            throw "Dependency references are missing. Check DependsOn Version values and the setup-beat-saber log."
+          }
+
       # Only needed when the project references a private NuGet feed.
       # - name: Update private NuGet source
       #   run: dotnet nuget update source "my-private-feed" --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text

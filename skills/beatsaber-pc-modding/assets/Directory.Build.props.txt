@@ -17,10 +17,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <DependsOn Include="BSIPA" />
+    <!-- Keep a Version on every dependency. setup-beat-saber requires it, and it
+         uses npm semver (4.3.7, ^4.3.6), not NuGet bracket ranges ([4.3.7]). -->
+    <DependsOn Include="BSIPA" Version="4.3.7" />
     <!-- Add only what the mod actually needs.
-    <DependsOn Include="BeatSaberMarkupLanguage" />
-    <DependsOn Include="SiraUtil" />
+    <DependsOn Include="BeatSaberMarkupLanguage" Version="1.14.2" />
+    <DependsOn Include="SiraUtil" Version="3.4.0" />
     -->
   </ItemGroup>
 </Project>

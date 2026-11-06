@@ -68,15 +68,16 @@ Set the Beat Saber directory when prompted and enable "store this folder in conf
 </PropertyGroup>
 
 <ItemGroup>
-  <DependsOn Include="BSIPA" />
-  <DependsOn Include="BeatSaberMarkupLanguage" />
-  <DependsOn Include="SiraUtil" />
+  <DependsOn Include="BSIPA" Version="4.3.7" />
+  <DependsOn Include="BeatSaberMarkupLanguage" Version="1.14.2" />
+  <DependsOn Include="SiraUtil" Version="3.4.0" />
 </ItemGroup>
 ```
 
 Rules:
 
 - Keep the `BSIPA` dependency; BSIPA requires it.
+- Give every dependency a `Version`. `setup-beat-saber` in CI skips dependencies without one, and it reads the value as npm semver (`4.3.7`, `^4.3.6`), not a NuGet bracket range.
 - `PluginId` and `PluginName` should be identical and space-free for BeatMods uploads.
 - `Version` follows SemVer.
 - `GameVersion` must exactly match the game build you compile against.

@@ -4,6 +4,30 @@ Reference workflow: <https://github.com/Auros/SiraUtil/blob/main/.github/workflo
 
 A PC mod needs game assemblies to compile, and those assemblies cannot be committed. CI solves this by downloading the dependencies from BeatMods at build time. The release flow adds one more step: when a `v*` tag is pushed, build the mod and attach the zip to a GitHub Release for that tag.
 
+## Verified compatibility (2026-11-06)
+
+BeatMods migrated to API v3 in late 2026. `nicoco007/setup-beat-saber@v1` was updated for v3 on 2026-11-01 (release v1.2.3, commit `69db3c1`), and the flow was verified end-to-end:
+
+| Check | Result |
+| --- | --- |
+| `GET https://beatmods.com/api/v3/games/beatsaber` | 200, 104 game versions, newest 1.45.3 |
+| `GET https://beatmods.com/api/v3/mods?gameName=beatsaber` | 200, 297 projects |
+| `GET https://beatmods.com/api/v3/mods/1` (BSIPA) | 200, 41 versions, 2.3 MB zip downloads |
+| `setup-beat-saber@v1` on `windows-latest` | success; 297 reference files; `Libs` and `Beat Saber_Data` present |
+
+Evidence runs: [v1 probe](https://github.com/denpadokei/beatsaber-modding-skills/actions/runs/42139967126), [exact-version probe, no warnings](https://github.com/denpadokei/beatsaber-modding-skills/actions/runs/42140297298).
+
+Re-check before blaming the workflow:
+
+```powershell
+$h = @{ "User-Agent" = "setup-beat-saber" }
+(Invoke-WebRequest "https://beatmods.com/api/v3/games/beatsaber" -Headers $h).StatusCode
+(Invoke-WebRequest "https://beatmods.com/api/v3/mods?gameName=beatsaber" -Headers $h).StatusCode
+(Invoke-WebRequest "https://beatmods.com/api/v3/mods/1" -Headers $h).StatusCode
+```
+
+If all three return 200, the API is up and the failure is in the manifest, dependency versions, or the action pin.
+
 ## How the reference workflow works
 
 SiraUtil's `build.yml` does five things:
@@ -26,6 +50,28 @@ No Beat Saber installation and no `csproj.user` are required on the runner. That
 - Tags use the `v` prefix: `v1.2.3`, `v1.2.3-beta.1`.
 
 If the build works locally only because the game is installed, fix the project before adding CI. A workflow cannot compensate for absolute paths or local-only references.
+
+## Dependency version syntax
+
+`setup-beat-saber` reads `DependsOn` items and resolves them with **npm semver**, not NuGet ranges. This is the most common reason a build works locally but CI cannot find a dependency.
+
+Rules verified against v1.2.3:
+
+- **Every `DependsOn` needs a `Version`.** Without one, the action logs `No version of BSIPA found that satisfies 'undefined'` and silently skips the download (the step still exits 0).
+- **Use npm semver syntax.** `4.3.7`, `^4.3.6`, `~4.3.6`, `>=4.3.6 <4.4.0` work. NuGet-style brackets such as `[4.3.7]` do **not** match.
+- **The action picks the lowest satisfying version.** It sorts ascending by semver and takes the first result. `^4.3.6` selected `4.3.6+1.29.1` for Beat Saber 1.44.1 instead of `4.3.7`, then warned that it did not support that game version.
+- **Pin exact versions for reproducible CI.** If you need a specific build, use `Version="4.3.7"`. Use ranges only when any compatible version is acceptable.
+
+```xml
+<ItemGroup>
+  <DependsOn Include="BSIPA" Version="4.3.7" />
+  <DependsOn Include="BeatSaberMarkupLanguage" Version="1.14.2" />
+</ItemGroup>
+```
+
+Check the action log for one `Downloading <dependency> <version>` line per dependency. A warning such as `does not support Beat Saber <version>` or `No version ... found` means the manifest and BeatMods metadata disagree; fix it before debugging the mod.
+
+The verification step in the workflow templates fails early if `Libs` is missing, which catches a skipped BSIPA download.
 
 ## Build workflow
 
@@ -56,6 +102,14 @@ jobs:
         uses: nicoco007/setup-beat-saber@v1
         with:
           project-path: ${{ github.workspace }}\MyMod\MyMod.csproj
+
+      - name: Verify Beat Saber references
+        shell: pwsh
+        run: |
+          if (-not $env:BeatSaberDir) { throw "BeatSaberDir is not set" }
+          if (-not (Test-Path (Join-Path $env:BeatSaberDir "Libs"))) {
+            throw "Dependency references are missing. Check DependsOn Version values and the setup-beat-saber log."
+          }
 
       - name: Build Release
         run: dotnet build "${{ github.workspace }}\MyMod\MyMod.csproj" -c Release
@@ -118,6 +172,14 @@ jobs:
         uses: nicoco007/setup-beat-saber@v1
         with:
           project-path: ${{ github.workspace }}\MyMod\MyMod.csproj
+
+      - name: Verify Beat Saber references
+        shell: pwsh
+        run: |
+          if (-not $env:BeatSaberDir) { throw "BeatSaberDir is not set" }
+          if (-not (Test-Path (Join-Path $env:BeatSaberDir "Libs"))) {
+            throw "Dependency references are missing. Check DependsOn Version values and the setup-beat-saber log."
+          }
 
       - name: Build Release
         run: dotnet build "${{ github.workspace }}\MyMod\MyMod.csproj" -c Release
@@ -235,6 +297,9 @@ If no CI output appears:
 | Symptom | Cause | Fix |
 | --- | --- | --- |
 | `setup-beat-saber` cannot resolve references | Missing `GameVersion` or dependency declared in props | Verify the manifest fields and that the dependency exists on BeatMods |
+| `No version of X found that satisfies 'undefined'` | `DependsOn` has no `Version` metadata | Add an npm-semver version to every dependency |
+| `No version ... satisfies '[4.3.7]'` | NuGet bracket range used | Use npm semver: `4.3.7`, `^4.3.6`, `>=4.3.6 <4.4.0` |
+| `Downloading X <old version>` plus `does not support Beat Saber` | The action picks the lowest satisfying version | Pin the exact version you build against |
 | `ResolveAssemblyReferences` cannot find assemblies | Forward slashes in `project-path`, or path points to a folder | Pass the `.csproj` path with backslashes |
 | Build works locally, fails in CI | Absolute paths, `csproj.user`, or a local `BeatSaberDir` | Remove local assumptions; rely on the action-provided references |
 | `CI output not found` in the package step | Looked for the local zip, or wrong project path | Package `bin\Release\net472\Final`; adjust the prefix for the project layout |
@@ -243,6 +308,17 @@ If no CI output appears:
 | Tag push does not start the workflow | `on.push.tags` missing, or tag pushed from a fork | Add the tags filter; push the tag to the main repository |
 | Release has no asset | `files` path did not match | Set `fail_on_unmatched_files: true` and fix the path |
 | Version/tag mismatch | Forgot to bump props before tagging | Bump, commit, delete and recreate the tag |
+
+## If the action breaks again
+
+1. Check the action repository for a newer release or tag: <https://github.com/nicoco007/setup-beat-saber/releases>.
+2. Pin the newest verified tag or a commit SHA instead of the floating major tag, for example `nicoco007/setup-beat-saber@v1.2.3`.
+3. Run the three endpoint checks above. If BeatMods returns non-200 or a different shape, the action needs an update.
+4. Manual fallback, if the action is unmaintained:
+   - Download reference assemblies from `https://api.github.com/repos/nicoco007/BeatSaberReferenceAssemblies/zipball/refs/tags/v<gameVersion>`.
+   - Download each dependency zip from the `downloadUrl` field of `https://beatmods.com/api/v3/mods/<projectId>`.
+   - Extract them into one folder, flatten `IPA/Libs` to `Libs` and `IPA/Data` to `Beat Saber_Data`, then set `BeatSaberDir` and `GameDirectory` in `GITHUB_ENV`.
+5. Do not silently fall back to committing reference DLLs. That hides version drift and bloats the repository.
 
 ## Relationship to BeatMods
 
