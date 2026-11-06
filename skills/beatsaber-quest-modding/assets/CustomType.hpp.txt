@@ -1,0 +1,31 @@
+// Template: custom type with a field, an override, and a coroutine hookup.
+// Header: include/Counter.hpp
+#pragma once
+
+#include "custom-types/shared/macros.hpp"
+#include "UnityEngine/MonoBehaviour.hpp"
+
+DECLARE_CLASS_CODEGEN(MyNamespace, Counter, UnityEngine::MonoBehaviour,
+    DECLARE_INSTANCE_FIELD(int, counts);
+    DECLARE_INSTANCE_METHOD(void, Update);
+    DECLARE_DEFAULT_CTOR();
+
+    public:
+    // C++-only members go after the C# members.
+    int localValue = 5;
+)
+
+// Source: src/Counter.cpp
+// #include "Counter.hpp"
+// DEFINE_TYPE(MyNamespace, Counter);
+//
+// void MyNamespace::Counter::Update() {
+//     counts += 1;
+// }
+//
+// Register in late_load():
+//   custom_types::Register::AutoRegister();
+//
+// Create:
+//   auto* counter = MyNamespace::Counter::New_ctor();
+//   gameObject->AddComponent<MyNamespace::Counter*>();

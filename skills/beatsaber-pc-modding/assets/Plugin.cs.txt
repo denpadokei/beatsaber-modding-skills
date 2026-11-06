@@ -1,0 +1,83 @@
+// Template: BSIPA plugin entry point with Harmony, BSML, and SiraUtil wiring.
+// Copy into Plugin.cs and remove the parts you do not use.
+using System.Reflection;
+using HarmonyLib;
+using IPA;
+using IPA.Config;
+using IPA.Config.Stores;
+using IPA.Logging;
+using SiraUtil.Zenject;
+using Zenject;
+
+namespace MyMod;
+
+[Plugin(RuntimeOptions.SingleStartInit), NoEnableDisable]
+internal class Plugin
+{
+    internal static Logger Log { get; private set; } = null!;
+
+    private readonly Harmony harmony;
+    private readonly Zenjector zenjector;
+
+    [Init]
+    public Plugin(Logger logger, Config config, PluginMetadata metadata, Zenjector zenjector)
+    {
+        Log = logger;
+        PluginConfig.Instance = config.GenerateConfigObject<PluginConfig>();
+        harmony = new Harmony(metadata.Id);
+
+        this.zenjector = zenjector;
+        zenjector.UseLogger(logger);
+        zenjector.Install<AppInstaller>(Location.App);
+        zenjector.Install<MenuInstaller>(Location.Menu);
+        zenjector.Install<PlayerInstaller>(Location.StandardPlayer);
+    }
+
+    [OnStart]
+    public void OnApplicationStart()
+    {
+        harmony.PatchAll(Assembly.GetExecutingAssembly());
+        Log.Info("MyMod started.");
+    }
+
+    [OnExit]
+    public void OnApplicationQuit()
+    {
+        harmony.UnpatchSelf();
+        Log.Info("MyMod stopped.");
+    }
+}
+
+// BSIPA config object. Properties persist to UserData/MyMod.json.
+internal class PluginConfig
+{
+    public static PluginConfig Instance { get; set; } = null!;
+
+    public virtual bool Enabled { get; set; } = true;
+    public virtual float Volume { get; set; } = 0.8f;
+}
+
+// Register scene-scoped services here.
+internal class AppInstaller : Installer
+{
+    public override void InstallBindings()
+    {
+        // Container.Bind<MyService>().AsSingle();
+    }
+}
+
+internal class MenuInstaller : Installer
+{
+    public override void InstallBindings()
+    {
+        // Container.Bind<MySettingsView>().FromNewComponentAsViewController().AsSingle();
+    }
+}
+
+internal class PlayerInstaller : Installer
+{
+    public override void InstallBindings()
+    {
+        // Container.Bind<MyGameplayService>().AsSingle();
+    }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "beatsaber-modding-skills",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Agent skills for Beat Saber PC and Quest modding",
+  "type": "module",
+  "scripts": {
+    "test": "node scripts/validate.mjs",
+    "validate": "node scripts/validate.mjs"
+  },
+  "license": "MIT"
+}

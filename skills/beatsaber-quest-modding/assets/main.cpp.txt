@@ -1,0 +1,39 @@
+// Template: Quest mod entry point.
+// Requires main.hpp from the quest-mod-template (scotland2, beatsaber-hook, paper logging).
+#include "main.hpp"
+#include "modconfig.hpp"
+
+#include "scotland2/shared/modloader.h"
+#include "custom-types/shared/register.hpp"
+#include "bsml/shared/BSML.hpp"
+
+static modloader::ModInfo modInfo{MOD_ID, VERSION, 0};
+
+Configuration& getConfig() {
+    static Configuration config(modInfo);
+    return config;
+}
+
+MOD_EXTERN_FUNC void setup(CModInfo* info) noexcept {
+    *info = modInfo.to_c();
+    getConfig().Load();
+    Paper::Logger::RegisterFileContextId(PaperLogger.tag);
+    PaperLogger.info("Completed setup!");
+}
+
+MOD_EXTERN_FUNC void late_load() noexcept {
+    il2cpp_functions::Init();
+
+    // Config must be initialized before any GetValue/SetValue call.
+    getModConfig().Init(modInfo);
+
+    // Register custom types before installing hooks that use them.
+    custom_types::Register::AutoRegister();
+
+    BSML::Init();
+    // BSML::Register::RegisterSettingsMenu("My Mod", DidActivate, true);
+
+    PaperLogger.info("Installing hooks...");
+    // INSTALL_HOOK(PaperLogger, MyHook);
+    PaperLogger.info("Installed all hooks!");
+}

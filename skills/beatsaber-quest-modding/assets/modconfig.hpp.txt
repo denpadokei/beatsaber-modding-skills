@@ -1,0 +1,18 @@
+// Template: config-utils config.
+// Place in include/modconfig.hpp, then call getModConfig().Init(modInfo) in late_load().
+#pragma once
+
+#include "config-utils/shared/config-utils.hpp"
+#include "UnityEngine/Color.hpp"
+#include "UnityEngine/Vector2.hpp"
+#include "UnityEngine/Vector3.hpp"
+#include "UnityEngine/Vector4.hpp"
+
+DECLARE_CONFIG(ModConfig,
+    CONFIG_VALUE(Enabled, bool, "Enabled", true);
+    CONFIG_VALUE(Volume, float, "Volume", 0.8f);
+    CONFIG_VALUE(Label, std::string, "Label", "default");
+    CONFIG_VALUE(Count, int, "Count", 3);
+    CONFIG_VALUE(Tint, UnityEngine::Color, "Tint", UnityEngine::Color(1.0f, 0.5f, 0.0f, 1.0f));
+    CONFIG_VALUE(Offset, UnityEngine::Vector2, "Offset", UnityEngine::Vector2(0.0f, 0.0f));
+)

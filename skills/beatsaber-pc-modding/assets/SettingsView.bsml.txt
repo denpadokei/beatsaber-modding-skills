@@ -1,0 +1,14 @@
+<!-- Template: BSML settings view.
+     Build action must be EmbeddedResource.
+     Resource name must match the ViewDefinition, e.g. MyMod.UI.SettingsView.bsml -->
+<bg xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://monkeymanboy.github.io/BSML-Docs/BSMLSchema.xsd">
+  <vertical child-expand-height="false" spacing="2" pad="2">
+    <text id="title" text="My Mod" align="Center" font-size="6"/>
+    <toggle-setting id="enabled" value="Enabled" text="Enable feature" apply-on-change="true"/>
+    <slider-setting id="volume" value="Volume" text="Volume"
+                    min="0" max="1" increments="0.05" apply-on-change="true"/>
+    <button id="reset" text="Reset to defaults" on-click="ResetClicked"/>
+    <text id="status" text="" align="Center"/>
+  </vertical>
+</bg>

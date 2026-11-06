@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Template: Directory.Build.props for a BSIPA plugin.
+     Replace every placeholder. GameVersion must exactly match the build you compile against. -->
+<Project>
+  <PropertyGroup>
+    <PluginId>MyMod</PluginId>
+    <PluginName>MyMod</PluginName>
+    <Authors>YourName</Authors>
+    <Version>1.0.0</Version>
+    <GameVersion>1.40.8</GameVersion>
+    <Description>Short description of what the mod does.</Description>
+
+    <ProjectSource>https://github.com/you/MyMod</ProjectSource>
+    <ProjectHome>https://github.com/you/MyMod</ProjectHome>
+    <Donate></Donate>
+    <PluginIcon>icon.png</PluginIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <DependsOn Include="BSIPA" />
+    <!-- Add only what the mod actually needs.
+    <DependsOn Include="BeatSaberMarkupLanguage" />
+    <DependsOn Include="SiraUtil" />
+    -->
+  </ItemGroup>
+</Project>
