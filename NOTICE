@@ -1,0 +1,16 @@
+# Third-party notices
+
+## BSMG Wiki
+
+Documentation content in this repository is derived from the BSMG Wiki:
+
+- Source: <https://github.com/bsmg/wiki>
+- Site: <https://bsmg.wiki/>
+- License: MIT
+- Copyright (c) 2019-2023 Jack Baron, BSMG, and Contributors
+
+Wiki text has been rewritten, condensed, and reorganized for agent consumption. Code patterns and command names remain faithful to the source. Each skill reference links to the canonical wiki page it covers.
+
+## Beat Saber
+
+Beat Saber is a trademark of Beat Games. This project is unofficial and is not affiliated with Beat Games, BSMG, or Meta.

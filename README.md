@@ -108,4 +108,4 @@ This is an unofficial community resource. It is not affiliated with Beat Games, 
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+MIT. See [LICENSE](LICENSE). Third-party attribution is in [NOTICE](NOTICE).
