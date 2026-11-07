@@ -1,0 +1,22 @@
+// Example Harmony patch for ChroMapper.
+// Replace the target type and method with one from the build you are targeting.
+using HarmonyLib;
+
+namespace MyChroMapperPlugin
+{
+    [HarmonyPatch(typeof(PrecisionStepDisplayController), "UpdateText")]
+    internal static class PrecisionStepDisplayController_UpdateTextPatch
+    {
+        private static bool Prefix(int newSnapping)
+        {
+            // Return false to skip the original method; return true to run it.
+            // Prefix parameters must match the target signature by name and type.
+            return true;
+        }
+
+        private static void Postfix(PrecisionStepDisplayController __instance)
+        {
+            // Runs after the original method.
+        }
+    }
+}
