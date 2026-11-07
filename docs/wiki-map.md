@@ -1,6 +1,8 @@
-# BSMG Wiki Map
+# Source Map
 
-Use these canonical pages when a skill needs to re-verify something or when the user asks for the source of a claim. The wiki is updated faster than this repository.
+Use these canonical sources when a skill needs to re-verify something or when the user asks for the source of a claim. Upstream documentation and source change faster than this repository.
+
+The Beat Saber sections point at the BSMG Wiki. The ChroMapper section points at the ChroMapper repository and wiki, because the source is the specification for its plugin API.
 
 ## Entry points
 
@@ -48,6 +50,28 @@ Use these canonical pages when a skill needs to re-verify something or when the 
 | Raspberry Pi workflow | <https://bsmg.wiki/quest/modding-with-raspi.html> |
 | QAVS (do not use for patching) | <https://bsmg.wiki/quest/modding-with-qavs.html> |
 | Quest 1 notes | <https://bsmg.wiki/quest/modding-quest1.html> |
+
+## ChroMapper plugins
+
+| Topic | URL |
+| --- | --- |
+| Plugin guide (start here) | <https://github.com/Caeden117/ChroMapper/blob/master/PLUGINS.md> |
+| Source of truth for the API | <https://github.com/Caeden117/ChroMapper/tree/master/Assets/__Scripts> |
+| Plugin loader | <https://github.com/Caeden117/ChroMapper/tree/master/Assets/__Scripts/PluginLoader> |
+| Requirement checks | <https://github.com/Caeden117/ChroMapper/blob/master/Assets/__Scripts/Requirements/RequirementCheck.cs> |
+| CMUI dialog box | <https://github.com/Caeden117/ChroMapper/blob/master/Assets/__Scripts/CMUI/DialogBox.cs> |
+| Extension buttons | <https://github.com/Caeden117/ChroMapper/blob/master/Assets/__Scripts/MapEditor/UI/Extensions/ExtensionButtons.cs> |
+| Scene build order | <https://github.com/Caeden117/ChroMapper/blob/master/ProjectSettings/EditorBuildSettings.asset> |
+| Build guide | <https://github.com/Caeden117/ChroMapper/blob/master/BUILD.md> |
+| User guide wiki | <https://chromapper.atlassian.net/wiki/spaces/UG/overview> |
+| Settings - Plugins | <https://chromapper.atlassian.net/wiki/spaces/UG/pages/2916361/Settings+-+Plugins> |
+| FAQ (plugin paths, CM-JS) | <https://chromapper.atlassian.net/wiki/spaces/UG/pages/806682666> |
+| Launcher (CML) | <https://cm.topc.at/dl> · <https://github.com/Top-Cat/CMLauncher> |
+| Community plugin template | <https://github.com/Vainstains/ChroMapperPluginTemplate> |
+| Visual Studio templates (Japanese docs) | <https://github.com/rynan4818/ChroMapperPluginTemplates> |
+| Example plugin (Harmony, scenes) | <https://github.com/rynan4818/ChroMapper-PrecisionStepAdditions> |
+| Update checker manifest | <https://github.com/LightAi39/ChroMapper-UpdateChecker> |
+| Discord (plugins channel) | <https://discord.gg/YmEt9EZ8pw> |
 
 ## Adjacent areas
 

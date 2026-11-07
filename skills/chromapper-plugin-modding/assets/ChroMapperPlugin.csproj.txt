@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ChroMapper plugin project skeleton (classic .NET Framework 4.8 class library).
+  Copy next to Plugin.cs, rename the assembly, and set ChroMapperDir before building.
+  Delete references the plugin does not use.
+-->
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6F1C3A2E-9B4D-4C8A-9E21-7D5B3F0A1C42}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MyChroMapperPlugin</RootNamespace>
+    <AssemblyName>MyChroMapperPlugin</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <LangVersion>9.0</LangVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Required: plugin attributes, loader types, editor classes, CMUI, Unity-facing controllers. -->
+    <Reference Include="Main">
+      <HintPath>$(ChroMapperDir)\ChroMapper_Data\Managed\Main.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+
+    <!-- ChroMapper's SimpleJSON library. Remove if the plugin uses another serializer. -->
+    <Reference Include="Plugins">
+      <HintPath>$(ChroMapperDir)\ChroMapper_Data\Managed\Plugins.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+
+    <!-- Bundled Harmony. Never reference a different Harmony build. -->
+    <Reference Include="0Harmony">
+      <HintPath>$(ChroMapperDir)\ChroMapper_Data\Managed\0Harmony.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+
+    <!-- Unity modules. Keep Copy Local off so they are never shipped with the plugin. -->
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(ChroMapperDir)\ChroMapper_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>$(ChroMapperDir)\ChroMapper_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UIModule">
+      <HintPath>$(ChroMapperDir)\ChroMapper_Data\Managed\UnityEngine.UIModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule">
+      <HintPath>$(ChroMapperDir)\ChroMapper_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.ImageConversionModule">
+      <HintPath>$(ChroMapperDir)\ChroMapper_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.AudioModule">
+      <HintPath>$(ChroMapperDir)\ChroMapper_Data\Managed\UnityEngine.AudioModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>$(ChroMapperDir)\ChroMapper_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestModule">
+      <HintPath>$(ChroMapperDir)\ChroMapper_Data\Managed\UnityEngine.UnityWebRequestModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.InputSystem">
+      <HintPath>$(ChroMapperDir)\ChroMapper_Data\Managed\Unity.InputSystem.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.TextMeshPro">
+      <HintPath>$(ChroMapperDir)\ChroMapper_Data\Managed\Unity.TextMeshPro.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+
+    <!-- Optional ChroMapper assemblies. Remove the ones the plugin does not use. -->
+    <Reference Include="Input">
+      <HintPath>$(ChroMapperDir)\ChroMapper_Data\Managed\Input.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="FileBrowser">
+      <HintPath>$(ChroMapperDir)\ChroMapper_Data\Managed\FileBrowser.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Intersections">
+      <HintPath>$(ChroMapperDir)\ChroMapper_Data\Managed\Intersections.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="LiteNetLib">
+      <HintPath>$(ChroMapperDir)\ChroMapper_Data\Managed\LiteNetLib.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Add every .cs file in the plugin here; classic projects do not glob. -->
+    <Compile Include="Plugin.cs" />
+    <Compile Include="HarmonyPatch.cs" />
+  </ItemGroup>
+
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
+  <!-- Deploy straight into the ChroMapper install that ChroMapperDir points at. -->
+  <Target Name="Deploy" AfterTargets="Build" Condition=" '$(ChroMapperDir)' != '' ">
+    <MakeDir Directories="$(ChroMapperDir)\Plugins" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(ChroMapperDir)\Plugins" />
+    <Copy SourceFiles="$(TargetDir)$(TargetName).pdb"
+          DestinationFolder="$(ChroMapperDir)\Plugins"
+          Condition="Exists('$(TargetDir)$(TargetName).pdb')" />
+  </Target>
+</Project>

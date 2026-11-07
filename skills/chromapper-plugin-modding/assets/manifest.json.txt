@@ -1,0 +1,8 @@
+{
+  "id": "com.example.MyChroMapperPlugin",
+  "name": "My ChroMapper Plugin",
+  "author": "YourName",
+  "version": "v1.0.0",
+  "description": "One line describing what the plugin adds.",
+  "git": "https://github.com/YourName/MyChroMapperPlugin"
+}

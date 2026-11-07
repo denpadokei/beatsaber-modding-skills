@@ -21,5 +21,6 @@ jobs:
           echo "$output"
           grep -q 'beatsaber-pc-modding' <<< "$output"
           grep -q 'beatsaber-quest-modding' <<< "$output"
+          grep -q 'chromapper-plugin-modding' <<< "$output"
         env:
           DISABLE_TELEMETRY: "1"

@@ -1,0 +1,56 @@
+// ChroMapper plugin entry point.
+// Rename the namespace, assembly name, display name, and Harmony ID together.
+using System.Reflection;
+// using System.Linq; // Uncomment when using the Resources.FindObjectsOfTypeAll example below.
+using HarmonyLib;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+// The Options > Plugins list shows this value as v<version>.
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]
+
+namespace MyChroMapperPlugin
+{
+    [Plugin("My ChroMapper Plugin")]
+    public class Plugin
+    {
+        private const string HarmonyId = "com.example.MyChroMapperPlugin";
+
+        private Harmony harmony;
+
+        [Init]
+        private void Init()
+        {
+            harmony = new Harmony(HarmonyId);
+            harmony.PatchAll(Assembly.GetExecutingAssembly());
+
+            SceneManager.sceneLoaded += OnSceneLoaded;
+            Debug.Log("[MyChroMapperPlugin] loaded");
+        }
+
+        [Exit]
+        private void Exit()
+        {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+            harmony?.UnpatchSelf();
+            Debug.Log("[MyChroMapperPlugin] unloaded");
+        }
+
+        private static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            // Build index 3 is 03_Mapper; see EditorBuildSettings.asset.
+            if (scene.buildIndex != 3) return;
+
+            Debug.Log("[MyChroMapperPlugin] mapper scene loaded");
+
+            // Find a live editor object and attach a component, for example:
+            //
+            // var target = Resources.FindObjectsOfTypeAll<PrecisionStepDisplayController>()
+            //     .FirstOrDefault(controller => controller.gameObject.scene.IsValid());
+            //
+            // if (target != null && target.gameObject.GetComponent<MyEditorBehaviour>() == null)
+            //     target.gameObject.AddComponent<MyEditorBehaviour>();
+        }
+    }
+}
