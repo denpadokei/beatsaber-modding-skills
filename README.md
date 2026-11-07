@@ -1,5 +1,7 @@
 # Beat Saber Modding Skills
 
+[![skills.sh](https://skills.sh/b/denpadokei/beatsaber-modding-skills)](https://skills.sh/denpadokei/beatsaber-modding-skills)
+
 Two agent skills that cover Beat Saber modding from both sides: **installing mods** and **building mods**. They are split by platform because PC and Quest standalone are completely different workflows.
 
 | Skill | Platform | Stack | Use it for |
