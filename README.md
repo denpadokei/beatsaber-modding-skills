@@ -10,6 +10,22 @@ Three agent skills that cover Beat Saber modding from both sides: **installing m
 | [`beatsaber-quest-modding`](skills/beatsaber-quest-modding/SKILL.md) | Quest 1/2/3/3S/Pro standalone | C++ + QPM + beatsaber-hook + custom-types + config-utils + BSML | Quest mod users and native mod developers |
 | [`chromapper-plugin-modding`](skills/chromapper-plugin-modding/SKILL.md) | ChroMapper (Windows / macOS / Linux) | C# + .NET Framework 4.8 + Main.dll + Harmony + CMUI | ChroMapper plugin users and plugin developers |
 
+## Companion MCP server (build without Visual Studio)
+
+The PC skill covers the BSMT/MCP workflow in
+[`references/bsmt-mcp.md`](skills/beatsaber-pc-modding/references/bsmt-mcp.md). The companion
+[BeatSaberModdingToolsMCP](https://github.com/denpadokei/BeatSaberModdingToolsMCP) server exposes the
+BSMT extension/task workflow to GitHub Copilot, Claude, Codex, and other MCP clients, and as the
+`bsmt` CLI. It builds without Visual Studio:
+
+```powershell
+uvx --from git+https://github.com/denpadokei/BeatSaberModdingToolsMCP bsmt doctor
+uvx --from git+https://github.com/denpadokei/BeatSaberModdingToolsMCP bsmt build .\MyMod -c Release --package --deploy
+```
+
+Setup for VS Code Copilot Chat (`mcp.json`) and Copilot CLI (`mcp-config.json`), the 24 tools, and
+the project/item templates are documented in the reference above.
+
 Beat Saber content is sourced from the [BSMG Wiki](https://bsmg.wiki/), the community's canonical documentation. ChroMapper content is sourced from the [ChroMapper repository](https://github.com/Caeden117/ChroMapper), its [plugin guide](https://github.com/Caeden117/ChroMapper/blob/master/PLUGINS.md), and the [ChroMapper wiki](https://chromapper.atlassian.net/wiki/spaces/UG/overview). Each reference file links back to the exact page or source file it covers so an agent can re-check anything that may have changed.
 
 ## Quick start
@@ -108,6 +124,7 @@ Point the host at `skills/beatsaber-pc-modding/`, `skills/beatsaber-quest-moddin
 - "Add a `config-utils` config and a BSML-Lite settings page to this QPM project."
 - "Package this Quest mod as a QMOD with a cover image and file copies."
 - "Set up GitHub Actions to build on push and attach the zip to a `v*` tag release."
+- "Build this mod with GitHub Copilot without opening Visual Studio."
 - "ChroMapper won't load the plugin I put in the Plugins folder. What now?"
 - "Create a ChroMapper plugin that adds a mapper toolbar button and a CMUI settings dialog."
 - "Write a Harmony patch against ChroMapper's mapper scene and package the plugin for release."
@@ -128,7 +145,7 @@ Mapping, lighting, and 3D asset authoring are separate workflows; the skills poi
 | --- | --- | --- |
 | Install / update / downgrade mods | Yes | Yes |
 | Manual mod installation | BSIPA + Plugins | MBF / QuestPatcher |
-| Project setup and templates | BSMT (Rider / Visual Studio) | QPM + Android NDK |
+| Project setup and templates | BSMT (Rider / Visual Studio) or BSMT MCP/CLI | QPM + Android NDK |
 | Language and runtime | C# / .NET Framework 4.7.2 / Unity 2022.3 | C++ / il2cpp / Unity |
 | Hooking | Harmony (prefix, postfix, transpiler) | `beatsaber-hook` (`MAKE_HOOK_MATCH`) |
 | Dependency injection | SiraUtil + Zenject | Manual / `custom-types` |
@@ -159,6 +176,7 @@ Beat Saber の Modding と ChroMapper のプラグイン開発を扱う 3 つの
 - `beatsaber-pc-modding` — Steam / Oculus PC 版。BSManager などでの Mod 導入・ダウングレードと、C# + BSIPA + Harmony + BSML + SiraUtil による Mod 開発。
 - `beatsaber-quest-modding` — Quest 単体版。ModsBeforeFriday / QuestPatcher での導入と、C++ + QPM + beatsaber-hook + custom-types + config-utils + BSML によるネイティブ Mod 開発、QMOD パッケージング。
 - `chromapper-plugin-modding` — ChroMapper（マップエディタ）のプラグイン導入・トラブルシュートと、.NET Framework 4.8 + Main.dll + Harmony + CMUI によるプラグイン開発。ChroMapper の「Mod」はすべてプラグインです。
+- PC Mod のビルド用 MCP サーバー（Visual Studio 不要 / GitHub Copilot 対応）: [BeatSaberModdingToolsMCP](https://github.com/denpadokei/BeatSaberModdingToolsMCP)。使い方は [`bsmt-mcp.md`](skills/beatsaber-pc-modding/references/bsmt-mcp.md) を参照。
 
 導入手順は上記の [Quick start](#quick-start) を参照してください。CLI では次の 1 コマンドで入ります。
 

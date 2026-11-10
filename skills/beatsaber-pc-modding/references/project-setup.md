@@ -7,7 +7,7 @@ Canonical pages: <https://bsmg.wiki/modding/pc/setup.html>, <https://bsmg.wiki/m
 - Windows with a modded Beat Saber install.
 - Basic to intermediate C# and Unity knowledge.
 - Rider (recommended, free for non-commercial use) or Visual Studio Community.
-- BeatSaberModdingTools (BSMT) extension for the chosen IDE.
+- BeatSaberModdingTools (BSMT) extension for the chosen IDE, or the [BSMT MCP server](bsmt-mcp.md) / `bsmt` CLI for AI and headless builds.
 
 Beat Saber is Unity 2022.3 with C# on .NET Framework 4.7.2. Mods are DLLs loaded by BSIPA.
 
@@ -24,6 +24,18 @@ Beat Saber is Unity 2022.3 with C# on .NET Framework 4.7.2. Mods are DLLs loaded
 2. Install the BSMT VS extension from <https://github.com/Zingabopp/BeatSaberTemplates/>.
 3. Create a project from the Beat Saber plugin templates.
 
+## Without Visual Studio (AI agents)
+
+The [BSMT MCP server](bsmt-mcp.md) provides the same project setup without an IDE. It can detect the game, write `BeatSaberDir`, add references, validate/embed the manifest, and build/package/deploy:
+
+```powershell
+uvx --from git+https://github.com/denpadokei/BeatSaberModdingToolsMCP bsmt create .\MyMod --template core
+uvx --from git+https://github.com/denpadokei/BeatSaberModdingToolsMCP bsmt setup .\MyMod --game "D:\...\Beat Saber"
+uvx --from git+https://github.com/denpadokei/BeatSaberModdingToolsMCP bsmt build .\MyMod -c Release --package --deploy
+```
+
+For GitHub Copilot / Claude / Codex setup and the full tool list, see [bsmt-mcp.md](bsmt-mcp.md). This path still requires the game files (or a reference copy) and does not replace in-game testing.
+
 ## Template selection
 
 - **Bare template** — smallest starting point; walk through [Harmony](harmony-patching.md) and [BSML](bsml-ui.md) manually.
@@ -33,7 +45,7 @@ Do not create the solution inside the Beat Saber install folder. Updates and rei
 
 ## First build
 
-Set the Beat Saber directory when prompted and enable "store this folder in config". Then build once before editing code. A successful build proves references resolve. If it fails:
+Set the Beat Saber directory when prompted and enable "store this folder in config". Then build once before editing code. A successful build proves references resolve. With the MCP server, run `bsmt inspect .` or the `inspect_project` tool first; `build_mod` returns the same missing-reference diagnostics. If it fails:
 
 - Re-select the game directory via `Tools` → `BSMT Project Tools`.
 - Restart the IDE.
@@ -44,7 +56,7 @@ Set the Beat Saber directory when prompted and enable "store this folder in conf
 | File | Purpose |
 | --- | --- |
 | `<Name>.csproj` | Build configuration and references. |
-| `<Name>.csproj.user` | Local Beat Saber path, managed by BSMT. Do not commit. |
+| `<Name>.csproj.user` | Local Beat Saber path, managed by BSMT or `bsmt setup`. Do not commit. |
 | `Plugin.cs` | BSIPA entry point. |
 | `Directory.Build.props` | Manifest metadata and dependency declarations. |
 | `manifest.json` | Generated at build into the assembly; do not hand-edit. |
@@ -146,6 +158,7 @@ Guidelines:
 
 Copyable templates: [`../assets/Directory.Build.props.txt`](../assets/Directory.Build.props.txt), [`../assets/Plugin.cs.txt`](../assets/Plugin.cs.txt).
 
+- [BSMT MCP server](bsmt-mcp.md)
 - [Harmony patching](harmony-patching.md)
 - [BSML UI](bsml-ui.md)
 - [Zenject and SiraUtil](zenject-sirautil.md)

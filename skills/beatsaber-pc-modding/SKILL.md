@@ -18,6 +18,7 @@ Covers both jobs people call "modding": **using** mods and **building** mods. Id
 | --- | --- |
 | "Install mods", "songs won't load", "update broke my mods", "downgrade" | [Install and downgrade](references/install-and-downgrade.md) |
 | "Create a mod", "build a plugin", "set up a project" | [Project setup](references/project-setup.md) |
+| "Build without Visual Studio", "MCP", "GitHub Copilot", "AI agent" | [BSMT MCP server](references/bsmt-mcp.md) |
 | "Patch a game method", "prefix/postfix", "transpiler" | [Harmony patching](references/harmony-patching.md) |
 | "Add a settings menu", "BSML", "flow coordinator", "floating screen" | [BSML UI](references/bsml-ui.md) |
 | "Inject a service", "Zenject", "SiraUtil", "installer" | [Zenject and SiraUtil](references/zenject-sirautil.md) |
@@ -57,8 +58,8 @@ Install paths (default):
 verify game version → create BSMT project → implement → build → launch with --verbose → read IPA console → repeat → release build
 ```
 
-1. **Environment.** Windows, Beat Saber installed and modded, Rider (recommended) or Visual Studio, plus the BSMT extension. Full details: [project-setup.md](references/project-setup.md).
-2. **Project.** `Custom Templates` → BSIPA plugin template. Set the Beat Saber directory when prompted. Build once before writing code to prove references resolve.
+1. **Environment.** Windows, Beat Saber installed and modded, and either Rider/Visual Studio with the BSMT extension or the [BSMT MCP server](references/bsmt-mcp.md) / `bsmt` CLI for AI and headless builds. Full details: [project-setup.md](references/project-setup.md).
+2. **Project.** `Custom Templates` → BSIPA plugin template, or `bsmt create . --template core` from the MCP server. Set the Beat Saber directory when prompted. Build once before writing code to prove references resolve.
 3. **Metadata.** Fill `Directory.Build.props`: `PluginId`, `PluginName`, `Authors`, `Version`, `GameVersion`, `Description`, and dependencies (`DependsOn`). Keep the BSIPA dependency.
 4. **Investigate.** Decompile `Beat Saber_Data\Managed` in ILSpy (or dnSpy) and find the method, event, or pool you need. Prefer postfixes and public APIs over transpilers.
 5. **Implement.** Use the smallest mechanism that works:
@@ -174,6 +175,7 @@ Verify before relying on these. They were current when this skill was written (2
 - [Debugging and testing](references/debugging-and-testing.md) — launch args, IPA logs, decompilers, RUE, debug player, test matrix.
 - [Release and support](references/release-and-support.md) — release checklist, BeatMods expectations, support triage.
 - [Automated builds and tag releases](references/automated-builds.md) — GitHub Actions, `setup-beat-saber`, artifact upload, tag-triggered GitHub Releases.
+- [Building with the BSMT MCP server](references/bsmt-mcp.md) — GitHub Copilot / MCP setup, agent workflow, templates, headless builds.
 
 ## 8. Related areas
 
