@@ -21,6 +21,7 @@ Covers both jobs people call "modding": **using** mods and **building** mods. Id
 | "Build without Visual Studio", "MCP", "GitHub Copilot", "AI agent" | [BSMT MCP server](references/bsmt-mcp.md) |
 | "Patch a game method", "prefix/postfix", "transpiler" | [Harmony patching](references/harmony-patching.md) |
 | "Add a settings menu", "BSML", "flow coordinator", "floating screen" | [BSML UI](references/bsml-ui.md) |
+| "BSML deep dive", "type handlers", "every tag", "custom BSML tag", "settings binding details" | Companion `beatsaber-bsml-ui` skill; quick version: [BSML UI](references/bsml-ui.md) |
 | "Inject a service", "Zenject", "SiraUtil", "installer" | [Zenject and SiraUtil](references/zenject-sirautil.md) |
 | "Crashes", "logs", "decompile", "test in game" | [Debugging and testing](references/debugging-and-testing.md) |
 | "Release", "BeatMods", "manifest", "support a user" | [Release and support](references/release-and-support.md) |
@@ -137,7 +138,7 @@ internal class SettingsView : BSMLAutomaticViewController
 }
 ```
 
-Register a settings tab with `BSMLSettings.Instance.AddSettingsMenu(name, resource, host)`. Full menu, flow-coordinator, and floating-screen patterns: [bsml-ui.md](references/bsml-ui.md).
+Register a settings tab with `BSMLSettings.Instance.AddSettingsMenu(name, resource, host)`. Full menu, flow-coordinator, and floating-screen patterns: [bsml-ui.md](references/bsml-ui.md). For the exhaustive BSML reference — every tag, type-handler attribute, settings binding rule, macro, custom tag, and failure mode — use the companion `beatsaber-bsml-ui` skill.
 
 ## 5. Version matrix
 
@@ -170,7 +171,7 @@ Verify before relying on these. They were current when this skill was written (2
 - [Install and downgrade](references/install-and-downgrade.md) — installers, manual BSIPA, legacy branches, songs, playlists, uninstall, safety.
 - [Project setup](references/project-setup.md) — Rider/Visual Studio, BSMT, `Directory.Build.props`, references, build outputs.
 - [Harmony patching](references/harmony-patching.md) — patch types, injected parameters, private access, ordering, pitfalls.
-- [BSML UI](references/bsml-ui.md) — embedded resources, settings/gameplay tabs, flow coordinators, floating screens, bindings.
+- [BSML UI](references/bsml-ui.md) — quick PC reference: embedded resources, settings/gameplay tabs, flow coordinators, floating screens, bindings. The companion `beatsaber-bsml-ui` skill has the full tag/type-handler/settings/macro reference.
 - [Zenject and SiraUtil](references/zenject-sirautil.md) — installers, locations, bindings, UI injection, Affinity.
 - [Debugging and testing](references/debugging-and-testing.md) — launch args, IPA logs, decompilers, RUE, debug player, test matrix.
 - [Release and support](references/release-and-support.md) — release checklist, BeatMods expectations, support triage.

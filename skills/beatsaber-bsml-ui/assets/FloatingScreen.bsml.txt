@@ -1,0 +1,11 @@
+<!-- Template: floating-screen content for gameplay.
+     Build action: EmbeddedResource.
+     Create the screen after the gameplay scene loads and destroy it on scene exit. -->
+<bg xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://monkeymanboy.github.io/BSML-Docs/ https://monkeymanboy.github.io/BSML-Docs/BSMLSchema.xsd">
+  <vertical child-control-height="false" spacing="1" pad="2">
+    <text text="Overlay" align="Center" font-size="6"/>
+    <text id="status" text="Waiting" align="Center" font-size="4"/>
+    <toggle-setting text="Enabled" value="enabled" apply-on-change="true"/>
+  </vertical>
+</bg>

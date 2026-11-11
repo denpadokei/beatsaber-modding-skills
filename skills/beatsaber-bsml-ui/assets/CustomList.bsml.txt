@@ -1,0 +1,27 @@
+<!-- Template: custom-list with a per-item template and page buttons.
+     Build action: EmbeddedResource.
+     `contents` must be a [UIValue] IList of item objects.
+     `~icon` must be a resource path string (#GameSprite, URL, file, or embedded resource).
+     Actions inside the cell resolve against the item, not the screen host. -->
+<bg xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://monkeymanboy.github.io/BSML-Docs/ https://monkeymanboy.github.io/BSML-Docs/BSMLSchema.xsd">
+  <vertical child-control-height="false" spacing="1" pad="2">
+    <text text="Items" align="Center" font-size="6"/>
+
+    <page-button direction="Up"
+                 click-event="item-list#PageUp" pref-width="4" pref-height="4"/>
+
+    <custom-list id="item-list" contents="items" select-cell="select-item"
+                 cell-size="10" visible-cells="4" list-width="60"
+                 clickable-cells="true" show-scrollbar="true">
+      <horizontal child-expand-width="false" pad="1" spacing="1">
+        <image src="~icon" pref-width="8" pref-height="8" preserve-aspect="true"/>
+        <text text="~name" align="MidlineLeft" font-size="4"/>
+        <button text="Use" on-click="use-current" pref-width="12" pref-height="8"/>
+      </horizontal>
+    </custom-list>
+
+    <page-button direction="Down"
+                 click-event="item-list#PageDown" pref-width="4" pref-height="4"/>
+  </vertical>
+</bg>

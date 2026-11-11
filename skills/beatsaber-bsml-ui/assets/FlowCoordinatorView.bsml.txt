@@ -1,0 +1,15 @@
+<!-- Template: BSML view for a flow coordinator.
+     Build action: EmbeddedResource.
+     Resource name must match [ViewDefinition]. -->
+<bg xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://monkeymanboy.github.io/BSML-Docs/ https://monkeymanboy.github.io/BSML-Docs/BSMLSchema.xsd">
+  <vertical child-control-height="false" spacing="2" pad="2">
+    <text id="title" text="My Mod" align="Center" font-size="8"/>
+    <text id="status" text="Ready" align="Center" font-size="4"/>
+
+    <horizontal spacing="2" child-align="MiddleCenter">
+      <button text="Do something" on-click="do-something" pref-width="35" pref-height="9"/>
+      <button text="Close" on-click="close" pref-width="25" pref-height="9"/>
+    </horizontal>
+  </vertical>
+</bg>

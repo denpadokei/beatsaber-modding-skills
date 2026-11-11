@@ -20,6 +20,7 @@ jobs:
           output="$(npx --yes skills@latest add . --list)"
           echo "$output"
           grep -q 'beatsaber-pc-modding' <<< "$output"
+          grep -q 'beatsaber-bsml-ui' <<< "$output"
           grep -q 'beatsaber-quest-modding' <<< "$output"
           grep -q 'chromapper-plugin-modding' <<< "$output"
         env:
