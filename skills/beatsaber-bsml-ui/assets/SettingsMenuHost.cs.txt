@@ -1,0 +1,112 @@
+// Template: BSML settings host.
+// Requires a PluginConfig with Enabled, Volume, Mode, PlayerName, AccentHex, and Verbose members.
+// AccentHex is a string such as "#00ffff" so it survives BSIPA config serialization.
+using System.Collections.Generic;
+using System.ComponentModel;
+using BeatSaberMarkupLanguage.Attributes;
+using BeatSaberMarkupLanguage.Settings;
+using BeatSaberMarkupLanguage.Util;
+using UnityEngine;
+
+namespace MyMod;
+
+internal class SettingsMenuHost : INotifyPropertyChanged
+{
+    public static SettingsMenuHost Instance { get; } = new();
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    [UIValue("enabled")]
+    public bool Enabled
+    {
+        get => PluginConfig.Instance.Enabled;
+        set
+        {
+            PluginConfig.Instance.Enabled = value;
+            Notify();
+        }
+    }
+
+    [UIValue("volume")]
+    public float Volume
+    {
+        get => PluginConfig.Instance.Volume;
+        set
+        {
+            PluginConfig.Instance.Volume = value;
+            Notify();
+        }
+    }
+
+    [UIValue("mode")]
+    public string Mode
+    {
+        get => PluginConfig.Instance.Mode;
+        set
+        {
+            PluginConfig.Instance.Mode = value;
+            Notify();
+        }
+    }
+
+    [UIValue("player-name")]
+    public string PlayerName
+    {
+        get => PluginConfig.Instance.PlayerName;
+        set
+        {
+            PluginConfig.Instance.PlayerName = value;
+            Notify();
+        }
+    }
+
+    [UIValue("accent")]
+    public Color Accent
+    {
+        get => ColorUtility.TryParseHtmlString(PluginConfig.Instance.AccentHex, out Color color)
+            ? color
+            : Color.white;
+        set
+        {
+            PluginConfig.Instance.AccentHex = "#" + ColorUtility.ToHtmlStringRGB(value);
+            Notify();
+        }
+    }
+
+    [UIValue("verbose")]
+    public bool Verbose
+    {
+        get => PluginConfig.Instance.Verbose;
+        set
+        {
+            PluginConfig.Instance.Verbose = value;
+            Notify();
+        }
+    }
+
+    [UIValue("modes")]
+    public List<string> Modes { get; } = new() { "Standard", "One Saber", "No Arrows" };
+
+    [UIAction("#apply")]
+    private void OnApply()
+    {
+        // Values are already written through the setters.
+        // Persist here if your config does not save automatically.
+    }
+
+    [UIAction("#cancel")]
+    private void OnCancel()
+    {
+        // Widgets re-read the host values before this runs.
+    }
+
+    public static void Register() =>
+        MainMenuAwaiter.MainMenuInitializing += () =>
+            BSMLSettings.Instance.AddSettingsMenu(
+                "My Mod",
+                "MyMod.UI.SettingsMenu.bsml",
+                Instance);
+
+    private void Notify([System.Runtime.CompilerServices.CallerMemberName] string name = "") =>
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+}

@@ -2,11 +2,12 @@
 
 [![skills.sh](https://skills.sh/b/denpadokei/beatsaber-modding-skills)](https://skills.sh/denpadokei/beatsaber-modding-skills)
 
-Three agent skills that cover Beat Saber modding from both sides: **installing mods** and **building mods**. PC and Quest standalone are split because they are completely different workflows. ChroMapper is separate again: it is the map editor, not the game.
+Four agent skills that cover Beat Saber modding from both sides: **installing mods** and **building mods**. PC and Quest standalone are split because they are completely different workflows. BSML has its own deep-dive skill because it is the de facto PC in-game UI layer and its tag/type-handler/binding model is unlike a normal XML UI framework. ChroMapper is separate again: it is the map editor, not the game.
 
 | Skill | Platform | Stack | Use it for |
 | --- | --- | --- | --- |
 | [`beatsaber-pc-modding`](skills/beatsaber-pc-modding/SKILL.md) | Steam / Oculus PC | C# + BSIPA + Harmony + BSML + SiraUtil | PC mod users and C# plugin developers |
+| [`beatsaber-bsml-ui`](skills/beatsaber-bsml-ui/SKILL.md) | Steam / Oculus PC | C# + BSML (BeatSaberMarkupLanguage) | Deep BSML UI work: templates, settings, flow coordinators, floating screens, lists, bindings, custom tags |
 | [`beatsaber-quest-modding`](skills/beatsaber-quest-modding/SKILL.md) | Quest 1/2/3/3S/Pro standalone | C++ + QPM + beatsaber-hook + custom-types + config-utils + BSML | Quest mod users and native mod developers |
 | [`chromapper-plugin-modding`](skills/chromapper-plugin-modding/SKILL.md) | ChroMapper (Windows / macOS / Linux) | C# + .NET Framework 4.8 + Main.dll + Harmony + CMUI | ChroMapper plugin users and plugin developers |
 
@@ -26,7 +27,7 @@ uvx --from git+https://github.com/denpadokei/BeatSaberModdingToolsMCP bsmt build
 Setup for VS Code Copilot Chat (`mcp.json`) and Copilot CLI (`mcp-config.json`), the 24 tools, and
 the project/item templates are documented in the reference above.
 
-Beat Saber content is sourced from the [BSMG Wiki](https://bsmg.wiki/), the community's canonical documentation. ChroMapper content is sourced from the [ChroMapper repository](https://github.com/Caeden117/ChroMapper), its [plugin guide](https://github.com/Caeden117/ChroMapper/blob/master/PLUGINS.md), and the [ChroMapper wiki](https://chromapper.atlassian.net/wiki/spaces/UG/overview). Each reference file links back to the exact page or source file it covers so an agent can re-check anything that may have changed.
+Beat Saber content is sourced from the [BSMG Wiki](https://bsmg.wiki/), the community's canonical documentation. BSML content additionally comes from the [BSML docs](https://monkeymanboy.github.io/BSML-Docs/) and the [BeatSaberMarkupLanguage source](https://github.com/monkeymanboy/BeatSaberMarkupLanguage). ChroMapper content is sourced from the [ChroMapper repository](https://github.com/Caeden117/ChroMapper), its [plugin guide](https://github.com/Caeden117/ChroMapper/blob/master/PLUGINS.md), and the [ChroMapper wiki](https://chromapper.atlassian.net/wiki/spaces/UG/overview). Each reference file links back to the exact page or source file it covers so an agent can re-check anything that may have changed.
 
 ## Quick start
 
@@ -84,17 +85,19 @@ Project scope:
 
 ```text
 <your-repo>/.github/skills/beatsaber-pc-modding/SKILL.md
+<your-repo>/.github/skills/beatsaber-bsml-ui/SKILL.md
 <your-repo>/.github/skills/beatsaber-quest-modding/SKILL.md
 <your-repo>/.github/skills/chromapper-plugin-modding/SKILL.md
 ```
 
-Personal scope: copy the three folders under `skills/` into your user skills directory (for the Copilot app/CLI this is typically `~/.copilot/skills/`).
+Personal scope: copy the four folders under `skills/` into your user skills directory (for the Copilot app/CLI this is typically `~/.copilot/skills/`).
 
 ### Claude Code
 
 ```bash
 # personal
 cp -r skills/beatsaber-pc-modding       ~/.claude/skills/
+cp -r skills/beatsaber-bsml-ui          ~/.claude/skills/
 cp -r skills/beatsaber-quest-modding    ~/.claude/skills/
 cp -r skills/chromapper-plugin-modding  ~/.claude/skills/
 
@@ -107,18 +110,23 @@ On Windows PowerShell:
 
 ```powershell
 Copy-Item -Recurse skills\beatsaber-pc-modding      $env:USERPROFILE\.claude\skills\
+Copy-Item -Recurse skills\beatsaber-bsml-ui         $env:USERPROFILE\.claude\skills\
 Copy-Item -Recurse skills\beatsaber-quest-modding   $env:USERPROFILE\.claude\skills\
 Copy-Item -Recurse skills\chromapper-plugin-modding $env:USERPROFILE\.claude\skills\
 ```
 
 ### Any other SKILL.md host
 
-Point the host at `skills/beatsaber-pc-modding/`, `skills/beatsaber-quest-modding/`, and `skills/chromapper-plugin-modding/`. The only requirement is YAML frontmatter with `name` and `description` plus relative links that resolve inside the folder. If the host is on the [skills.sh supported list](https://github.com/vercel-labs/skills/blob/main/docs/agents.md), the CLI can do this for you with `-a <agent>`.
+Point the host at `skills/beatsaber-pc-modding/`, `skills/beatsaber-bsml-ui/`, `skills/beatsaber-quest-modding/`, and `skills/chromapper-plugin-modding/`. The only requirement is YAML frontmatter with `name` and `description` plus relative links that resolve inside the folder. If the host is on the [skills.sh supported list](https://github.com/vercel-labs/skills/blob/main/docs/agents.md), the CLI can do this for you with `-a <agent>`.
 
 ## Example prompts
 
 - "My PC Beat Saber mods broke after the update. Walk me through downgrading."
 - "Create a BSIPA plugin that shows a BSML settings tab and persists a toggle."
+- "Build a BSML settings menu with a toggle, slider, dropdown, string, and color picker."
+- "My BSML view is blank. Diagnose the parse error and fix the resource path."
+- "Make a BSML custom-list of songs with page buttons and a per-row Use button."
+- "Show a floating BSML panel during gameplay and clean it up on scene exit."
 - "Write a Harmony postfix that logs every note cut and a prefix that cancels misses in practice mode."
 - "My Quest mod crashes on startup. Here is the tombstone. Find the cause."
 - "Add a `config-utils` config and a BSML-Lite settings page to this QPM project."
@@ -131,7 +139,9 @@ Point the host at `skills/beatsaber-pc-modding/`, `skills/beatsaber-quest-moddin
 
 ## Scope
 
-The two Beat Saber skills cover the full path from "I want mods" to "I ship a mod": installation, downgrading, project setup, the platform's hooking/UI/config stack, debugging, packaging, and release.
+The Beat Saber PC and Quest skills cover the full path from "I want mods" to "I ship a mod": installation, downgrading, project setup, the platform's hooking/UI/config stack, debugging, packaging, and release.
+
+The BSML UI skill is the deep-dive for the PC game's in-game UI layer. It covers the parser/binding model, every built-in tag, every type-handler attribute, settings apply/cancel semantics, lists and scroll views, flow coordinators, floating screens, macros, and custom tags.
 
 The ChroMapper skill covers the map editor's plugin system: installing and troubleshooting plugins, setting up a `net48` project against `Main.dll`, loader callbacks, Harmony patches, CMUI dialogs, extension buttons, requirement checks, and release packaging.
 
@@ -155,6 +165,22 @@ Mapping, lighting, and 3D asset authoring are separate workflows; the skills poi
 | Packaging | Release zip / BeatMods | `.qmod` / mod repositories |
 | CI / releases | GitHub Actions + tag-triggered GitHub Release | GitHub Actions + tag-triggered GitHub Release |
 
+### BSML UI
+
+| Area | Coverage |
+| --- | --- |
+| Templates | `.bsml` XML, one root, embedded resources, resource naming, `DependentUpon` |
+| Loaders | `BSMLAutomaticViewController`, `BSMLResourceViewController`, direct `BSMLParser.Parse`, hot reload |
+| Binding | `[UIComponent]`, `[UIObject]`, `[UIValue]`, `[UIAction]`, `[UIParams]`, `~`, `#`, `tags` |
+| Settings | Toggle, slider, increment, list, list-slider, dropdown, string, color, apply/cancel, `INotifyPropertyChanged` |
+| Placement | Settings menu, gameplay setup tab, menu button, flow coordinator, floating screen, modals |
+| Lists | `list`, `custom-list`, custom cells, selection, page buttons, `ReloadData()` |
+| Scrolling | `scroll-view`, `scrollable-container`, `settings-container`, scroll focus and tagged controls |
+| Styling | Anchors, layout groups, `ContentSizeFitter`, backgrounds, text, localization, sprites, animated images |
+| Macros | `macro.if`, `macro.for-each`, `macro.define`, `macro.as-host`, `macro.reparent` |
+| Extensions | Custom `BSMLTag`, `TypeHandler`, and `BSMLMacro` registration |
+| Troubleshooting | Exception-by-exception diagnosis, blank UI, duplicated UI, binding, lists, hot reload |
+
 ### ChroMapper
 
 | Area | Coverage |
@@ -171,9 +197,10 @@ Mapping, lighting, and 3D asset authoring are separate workflows; the skills poi
 
 ## 日本語概要
 
-Beat Saber の Modding と ChroMapper のプラグイン開発を扱う 3 つのエージェントスキルです。
+Beat Saber の Modding と ChroMapper のプラグイン開発を扱う 4 つのエージェントスキルです。
 
 - `beatsaber-pc-modding` — Steam / Oculus PC 版。BSManager などでの Mod 導入・ダウングレードと、C# + BSIPA + Harmony + BSML + SiraUtil による Mod 開発。
+- `beatsaber-bsml-ui` — PC 版のゲーム内 UI を BSML で作るための深掘りスキル。`.bsml` テンプレート、組み込みタグ、type handler の属性、設定メニューの apply/cancel、リスト、フロークォーディネーター、フローティングスクリーン、マクロ、カスタムタグまで扱います。
 - `beatsaber-quest-modding` — Quest 単体版。ModsBeforeFriday / QuestPatcher での導入と、C++ + QPM + beatsaber-hook + custom-types + config-utils + BSML によるネイティブ Mod 開発、QMOD パッケージング。
 - `chromapper-plugin-modding` — ChroMapper（マップエディタ）のプラグイン導入・トラブルシュートと、.NET Framework 4.8 + Main.dll + Harmony + CMUI によるプラグイン開発。ChroMapper の「Mod」はすべてプラグインです。
 - PC Mod のビルド用 MCP サーバー（Visual Studio 不要 / GitHub Copilot 対応）: [BeatSaberModdingToolsMCP](https://github.com/denpadokei/BeatSaberModdingToolsMCP)。使い方は [`bsmt-mcp.md`](skills/beatsaber-pc-modding/references/bsmt-mcp.md) を参照。
@@ -209,6 +236,8 @@ A GitHub Actions workflow runs both on every push.
 ## Sources and attribution
 
 Beat Saber content is derived from the [BSMG Wiki](https://github.com/bsmg/wiki), licensed under the MIT License, Copyright (c) 2019-2023 Jack Baron, BSMG, and Contributors. Wiki text was rewritten and condensed for agent consumption; code patterns remain faithful to the source examples.
+
+BSML content in `beatsaber-bsml-ui` is derived from the [BSML documentation](https://monkeymanboy.github.io/BSML-Docs/) and the [BeatSaberMarkupLanguage source](https://github.com/monkeymanboy/BeatSaberMarkupLanguage), licensed under the MIT License, Copyright (c) 2019 David L. Tag, type-handler, and parser behavior was read from the 1.14.2 source and rewritten for agent consumption; no BSML source or binaries are redistributed here.
 
 ChroMapper content is derived from the [ChroMapper repository](https://github.com/Caeden117/ChroMapper), licensed under GPLv2, and the [ChroMapper wiki](https://chromapper.atlassian.net/wiki/spaces/UG/overview). The plugin guide (`PLUGINS.md`) and source files were rewritten, condensed, and cross-checked against the current loader implementation. No ChroMapper source code is redistributed here.
 

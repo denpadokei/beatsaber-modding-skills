@@ -1,0 +1,69 @@
+// Template: BSML view + flow coordinator + left-screen menu button.
+using BeatSaberMarkupLanguage;
+using BeatSaberMarkupLanguage.Attributes;
+using BeatSaberMarkupLanguage.MenuButtons;
+using BeatSaberMarkupLanguage.ViewControllers;
+using HMUI;
+using TMPro;
+
+namespace MyMod;
+
+[ViewDefinition("MyMod.UI.MainView.bsml")]
+internal class MainView : BSMLAutomaticViewController
+{
+    [UIComponent("status")]
+    private TextMeshProUGUI status = null!;
+
+    [UIAction("do-something")]
+    private void DoSomething() => status.text = "Done";
+
+    [UIAction("close")]
+    private void Close() => BeatSaberUI.MainFlowCoordinator.DismissFlowCoordinator(Coordinator);
+
+    internal MainFlowCoordinator Coordinator { get; set; } = null!;
+}
+
+internal class MainFlowCoordinator : FlowCoordinator
+{
+    private MainView view = null!;
+
+    protected override void DidActivate(
+        bool firstActivation,
+        bool addedToHierarchy,
+        bool screenSystemEnabling)
+    {
+        if (firstActivation)
+        {
+            view = BeatSaberUI.CreateViewController<MainView>();
+            view.Coordinator = this;
+            SetTitle("My Mod");
+            showBackButton = true;
+        }
+
+        if (addedToHierarchy)
+        {
+            ProvideInitialViewControllers(view);
+        }
+    }
+
+    protected override void BackButtonWasPressed(ViewController topViewController) =>
+        BeatSaberUI.MainFlowCoordinator.DismissFlowCoordinator(this);
+}
+
+internal class MenuButtonRegistration
+{
+    private MainFlowCoordinator flow = null!;
+    private MenuButton button = null!;
+
+    public void Register()
+    {
+        flow = BeatSaberUI.CreateFlowCoordinator<MainFlowCoordinator>();
+        button = new MenuButton("My Mod", Present);
+        MenuButtons.Instance.RegisterButton(button);
+    }
+
+    public void Unregister() => MenuButtons.Instance.UnregisterButton(button);
+
+    private void Present() =>
+        BeatSaberUI.MainFlowCoordinator.PresentFlowCoordinator(flow);
+}

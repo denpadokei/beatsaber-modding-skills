@@ -1,5 +1,7 @@
 # PC: BSML User Interfaces
 
+> This is the short PC-modding version. The companion `beatsaber-bsml-ui` skill is the exhaustive BSML reference: every tag, every type-handler attribute, settings binding, lists, macros, custom tags, and troubleshooting.
+
 Canonical page: <https://bsmg.wiki/modding/pc/bsml.html> · Tag reference: <https://monkeymanboy.github.io/BSML-Docs/>
 
 BeatSaberMarkupLanguage (BSML) is a tag-based UI language that mirrors Unity's GameObject hierarchy. It parses `.bsml` XML into Beat Saber UI objects and binds them to a host class.

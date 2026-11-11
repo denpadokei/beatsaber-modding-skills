@@ -226,7 +226,7 @@ async function main() {
   const entries = await readdir(SKILLS_DIR, { withFileTypes: true });
   const skills = entries.filter((entry) => entry.isDirectory()).map((entry) => path.join(SKILLS_DIR, entry.name));
 
-  if (skills.length !== 3) fail(`expected 3 skills (pc + quest + chromapper), found ${skills.length}`);
+  if (skills.length !== 4) fail(`expected 4 skills (pc + bsml-ui + quest + chromapper), found ${skills.length}`);
 
   for (const skill of skills) await validateSkill(skill);
   await validateRootDocs();

@@ -11,6 +11,18 @@ Documentation content in this repository is derived from the BSMG Wiki:
 
 Wiki text has been rewritten, condensed, and reorganized for agent consumption. Code patterns and command names remain faithful to the source. Each skill reference links to the canonical wiki page it covers.
 
+## BeatSaberMarkupLanguage (BSML)
+
+Documentation content in the `beatsaber-bsml-ui` skill is derived from the BSML project:
+
+- Source: <https://github.com/monkeymanboy/BeatSaberMarkupLanguage>
+- Docs: <https://monkeymanboy.github.io/BSML-Docs/>
+- Docs source: <https://github.com/monkeymanboy/BSML-Docs>
+- License: MIT
+- Copyright (c) 2019 David L
+
+The parser, tags, type handlers, macros, settings flow, and view controllers were read from BSML 1.14.2 source. The behavior is rewritten and condensed for agent consumption. No BSML source code or binaries are redistributed in this repository.
+
 ## ChroMapper
 
 Documentation content in the `chromapper-plugin-modding` skill is derived from the ChroMapper project:
